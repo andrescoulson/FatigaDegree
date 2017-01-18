@@ -46,18 +46,90 @@ class App:
             self.filebase = all_data
 
             # falta el espectro de frecuencia
-
+            plt.title("Histograma de Presion")
             plt.show()
 
         else:
             m = Message(self.master, text="Error open file")
 
-    def rainflow(self):
-        print rainflow.extract_cycles(self.filebase)
+    def findext(self):
+        matrix_in = self.filebase
+        #extrae los máximos y ptos de inflexion
+        wi = self.diff(matrix_in)
+        data = []
+        data[0] = matrix_in[0]
+        no = 0
+        current = 0  # tamaño actual del resultado
+        for i in range(len(matrix_in) - 2):
+            if wi[i] * wi[i + 1] <= 0:
+                no = no + 1
+                data[no] = matrix_in[i + 1]
+
+        data[no + 1] = matrix_in[len(matrix_in) - 1]
+        no = no + 2
+
+        #elimina puntos de inflexión
+        if no != 0:
+            current = no
+            no = 0
+
+        matrix_in = data
+
+        wi = self.diff(data)
+
+        for i in range(current-1):
+            if ~((wi[i] == 0) & (wi[i + 1] == 0)):
+                no = no + 1
+                data[no] = matrix_in[i + 1]
+
+        no = no + 1  # se agrega por el ultimo
+
+        # retira los repetidos
+        if no != 0:
+            current = no
+            no = 0
+
+        matrix_in = data
+
+        for i in range(current):
+            if ~ matrix_in[i] == matrix_in[i + 1]:
+                data[no] = matrix_in[i]
+                no = no + 1
+
+        # extrae los maximos
+
+        if no != 0:
+            current = no
+            no = 0
+
+        if len(data) > 2:
+            wi = self.diff(data)
+
+            for i in range(current):
+                if wi[i] * wi[i + 1] < 0:
+                    no = no + 1
+                    data[no] = matrix_in[i + 1]
+        #almacena datos en MATRIX_OUT
+        matrix_out = data
+
+        return matrix_out
+
+    def diff(self, filebase):
+        wi = np.zeros(len(filebase))
+        for i in range(len(filebase) - 1):
+            wi[i] = filebase[i + 1] - filebase[i]
+
+
+        return wi
+
+    def rainflow(self, dataIn, filebase):
+        wi = []
+
+
 
 
 ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
-ventanaPrincipal.wm_title("Embedding in TK")
+ventanaPrincipal.wm_title("Fatiga")
 ventanaPrincipal.geometry("800x500")
 ventanaPrincipal.mainloop()
