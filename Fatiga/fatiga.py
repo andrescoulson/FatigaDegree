@@ -1,25 +1,36 @@
 # coding=utf-8
 import numpy as np
-import rainflow
+try:
+    # Python 3.x
+    from tkinter import *
+except ImportError:
+    # Python 2.x
+    from Tkinter import *
+import matplotlib
+
+matplotlib.use("TkAgg")
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import math
-import Tkinter
-from Tkinter import *
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
-from numpy import arange, sin, pi
-from tkFileDialog import askopenfilename
+try:
+    # Python 3.x
+    from tkinter.filedialog import askopenfilename
+except ImportError:
+    # Python 2.x
+    from tkFileDialog import askopenfilename
+
 
 
 class App:
     def __init__(self, master):
         self.master = master
         self.filebase = 0
-        self.btnLoad = Button(master, text="Load", command=self.loadPres).grid(row=1, column=1)
-        self.btnRcc = Button(master, text="RCC Analisys", command=self.onRccBtn).grid(row=1, column=3)
-        self.btnSlf = Button(master, text="SLF Analisys").grid(row=1, column=4)
-        self.btnReset = Button(master, text="Reset").grid(row=1, column=5)
-        self.btnExit = Button(master, text="Exit", command=quit).grid(row=1, column=6)
+        self.btnLoad = Button(master, text="Load", command=self.loadPres).place(x=10, y=10)
+        self.btnRcc = Button(master, text="RCC Analisys", command=self.onRccBtn).place(x=70, y=10)
+        self.btnSlf = Button(master, text="SLF Analisys", command=self.slfAnilisis).place(x=180, y=10)
+        self.btnReset = Button(master, text="Reset").place(x=290, y=10)
+        self.btnExit = Button(master, text="Exit", command=quit).place(x=360, y=10)
 
         self.file_opt = options = {}
 
@@ -30,24 +41,43 @@ class App:
         options['title'] = 'Presssure'
 
     def loadPres(self):
-        filename = askopenfilename(**self.file_opt)
-        if filename:
-            f = open(filename)
-            data = [line.replace("\n", " ")[0:] for line in f.readlines()[0:]]
+        all_data = self.getFile(self.file_opt)
+        if len(all_data) > 0:
+            # histograma de presion
 
-            all_data = np.zeros(len(data))
-            for i in range(len(data)):
-                all_data[i] = float(data[i])
+            fig = plt.figure(figsize=(10, 5), dpi=60)
+            Figure = FigureCanvasTkAgg(fig, master=self.master)
+            Figure.get_tk_widget().place(x=10, y=50)
+            ax = fig.add_subplot(111)
+            fig.subplots_adjust(top=0.90)
+            ax.hist(all_data, bins=int(math.sqrt(len(all_data))), normed=False)
+            ax.set_title("Histograma de Presion")
+            ax.plot()
+            fig.canvas.draw()
 
-            f.close()
+            # espectro de presion
 
-            plt.hist(all_data, bins=int(math.sqrt(len(all_data))), normed=False)
+            dt = 0.01
+            Fs = 1 / dt
+            t = np.arange(0, 10, dt)
+            nse = np.random.randn(len(t))
+            r = np.exp(-t / 0.05)
+            cnse = np.convolve(nse, r) * dt
+            cnse = cnse[:len(t)]
+            s = 0.1 * np.sin(2 * np.pi * t) + cnse
 
+            figu = plt.figure(figsize=(10, 5), dpi=60)
+            figura = FigureCanvasTkAgg(figu, master=self.master)
+            figura.get_tk_widget().place(x=10, y=380)
+            esp = figu.add_subplot(111)
+            figu.subplots_adjust(top=0.90)
+            esp.angle_spectrum(s, Fs=Fs)
+            esp.set_title("Espectro de Presion")
+            esp.plot()
+            figu.canvas.draw()
+
+            # seteando el archivo obtenido
             self.filebase = all_data
-
-            # falta el espectro de frecuencia
-            plt.title("Histograma de Presion")
-            plt.show()
 
         else:
             m = Message(self.master, text="Error open file")
@@ -107,7 +137,7 @@ class App:
         if len(data) > 2:
             wi = self.diff(data)
 
-            for i in range(current-1):
+            for i in range(current - 1):
                 if wi[i] * wi[i + 1] < 0:
                     no += 1
                     data[no] = matrix_in[i + 1]
@@ -128,7 +158,7 @@ class App:
         # inicializando variables
         data = datain
         tot_num = len(data)
-        data_out = np.zeros(len(data)*3)
+        data_out = np.zeros(len(data) * 3)
         j = -1
         cNr = 1
         k = 0
@@ -166,6 +196,7 @@ class App:
                     a[j - 2] = a[j]
                     j -= 2
                     if ampl > 0:
+                        current_vector_salida += 1
                         data_out[current_vector_salida] = ampl
                         current_vector_salida += 1
                         data_out[current_vector_salida] = mean
@@ -173,28 +204,54 @@ class App:
                         data_out[current_vector_salida] = 1.00
                         cNr += 1
                         k += 1
-                for l in range(j - 1):
-                    ampl = math.fabs(a[l] - a[l + 1]) / 2
-                    mean = (a[l] + a[l + 1]) / 2
-                    if ampl > 0:
-                        data_out[current_vector_salida] = ampl
-                        current_vector_salida += 1
-                        data_out[current_vector_salida] = mean
-                        current_vector_salida += 1
-                        data_out[current_vector_salida] = 0.50
-                        k += 1
-                col = k
-                print len(data_out)
-                return data_out, col
+        for l in range(j - 1):
+            ampl = math.fabs(a[l] - a[l + 1]) / 2
+            mean = (a[l] + a[l + 1]) / 2
+            if ampl > 0:
+                current_vector_salida += 1
+                data_out[current_vector_salida] = ampl
+                current_vector_salida += 1
+                data_out[current_vector_salida] = mean
+                current_vector_salida += 1
+                data_out[current_vector_salida] = 0.50
+                k += 1
+        col = k
+
+        data_out = data_out[:col - 1]
+        return data_out, col
 
     def onRccBtn(self):
         dataout = self.findext()
         fatiga, col = self.rainflow(dataout)
-        print fatiga
+
+
+    def slfAnilisis(self):
+        fig = plt.figure(1)
+        plt.ion()
+        t = np.arange(0.0, 3.0, 0.01)
+        s = np.sin(np.pi * t)
+        plt.plot(t, s)
+
+        canvas = FigureCanvasTkAgg(fig, master=self.master)
+        plot_widget = canvas.get_tk_widget()
+        plot_widget.grid(row=0, column=0)
+
+    def getFile(self, options):
+        filename = askopenfilename(**options)
+        if filename:
+            f = open(filename)
+            data = [line.replace("\n", " ")[0:] for line in f.readlines()[0:]]
+
+            all_data = np.zeros(len(data))
+            for i in range(len(data)):
+                all_data[i] = float(data[i])
+
+            f.close()
+        return all_data
 
 
 ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
-ventanaPrincipal.geometry("800x500")
+ventanaPrincipal.geometry("1024x700")
 ventanaPrincipal.mainloop()
