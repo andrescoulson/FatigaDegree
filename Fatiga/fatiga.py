@@ -1,5 +1,6 @@
 # coding=utf-8
 import numpy as np
+
 try:
     # Python 3.x
     from tkinter import *
@@ -13,13 +14,13 @@ from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolb
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import math
+
 try:
     # Python 3.x
     from tkinter.filedialog import askopenfilename
 except ImportError:
     # Python 2.x
     from tkFileDialog import askopenfilename
-
 
 
 class App:
@@ -57,23 +58,25 @@ class App:
 
             # espectro de presion
 
-            dt = 0.01
-            Fs = 1 / dt
-            t = np.arange(0, 10, dt)
-            nse = np.random.randn(len(t))
-            r = np.exp(-t / 0.05)
-            cnse = np.convolve(nse, r) * dt
-            cnse = cnse[:len(t)]
-            s = 0.1 * np.sin(2 * np.pi * t) + cnse
-
+            # dt = 0.01
+            # Fs = 1
+            # t = np.arange(0, 10, dt)
+            # nse = np.random.randn(len(t))
+            # r = np.exp(-t / 0.05)
+            # cnse = np.convolve(nse, r) * dt
+            # cnse = cnse[:len(t)]
+            # s = 0.1 * np.sin(2 * np.pi * t) + cnse
+            #
             figu = plt.figure(figsize=(10, 5), dpi=60)
             figura = FigureCanvasTkAgg(figu, master=self.master)
             figura.get_tk_widget().place(x=10, y=380)
             esp = figu.add_subplot(111)
             figu.subplots_adjust(top=0.90)
-            esp.angle_spectrum(s, Fs=Fs)
             esp.set_title("Espectro de Presion")
-            esp.plot()
+            esp.set_xlabel('Time [Hours]')
+            esp.set_ylabel('Pressure [Psi]')
+            y = np.arange(len(all_data))
+            esp.plot(y, all_data)
             figu.canvas.draw()
 
             # seteando el archivo obtenido
@@ -95,7 +98,7 @@ class App:
                 no += 1
                 data[no] = matrix_in[i + 1]
 
-        data[no + 1] = matrix_in[len(matrix_in) - 1]
+        data[no + 1] = matrix_in[current - 1]
         no += 2
         data = data[:no]
 
@@ -109,8 +112,8 @@ class App:
 
         wi = self.diff(data)
 
-        for i in range(current - 2):
-            if ~((wi[i] == 0) & (wi[i + 1] == 0)):
+        for i in range(current - 1):
+            if ~((wi[i] == 0) and (wi[i + 1] == 0)):
                 no += 1
                 data[no] = matrix_in[i + 1]
 
@@ -136,7 +139,6 @@ class App:
 
         if len(data) > 2:
             wi = self.diff(data)
-
             for i in range(current - 1):
                 if wi[i] * wi[i + 1] < 0:
                     no += 1
@@ -162,11 +164,11 @@ class App:
         j = -1
         cNr = 1
         k = 0
-        a = np.zeros(len(data))
+        a = np.zeros(len(data) * 5)
         ampl = 0
         mean = 0
         current_vector = 0
-        current_vector_salida = 0
+        current_vector_salida = -1
         # fin de inicializacion
 
         for i in range(tot_num):
@@ -185,6 +187,7 @@ class App:
                     a[1] = a[2]
                     j = 1
                     if ampl > 0:
+                        current_vector_salida += 1
                         data_out[current_vector_salida] = ampl
                         current_vector_salida += 1
                         data_out[current_vector_salida] = mean
@@ -204,7 +207,7 @@ class App:
                         data_out[current_vector_salida] = 1.00
                         cNr += 1
                         k += 1
-        for l in range(j - 1):
+        for l in range(j):
             ampl = math.fabs(a[l] - a[l + 1]) / 2
             mean = (a[l] + a[l + 1]) / 2
             if ampl > 0:
@@ -217,13 +220,45 @@ class App:
                 k += 1
         col = k
 
-        data_out = data_out[:col - 1]
+        data_out = data_out[:col]
         return data_out, col
 
     def onRccBtn(self):
         dataout = self.findext()
         fatiga, col = self.rainflow(dataout)
+        # obteniendo datos esfuerzos
+        esfuerzo_alternante = []
+        esfuerzo_medio = []
+        k = 0
+        for i in range(int(col / 3)):
+            for j in range(3):
+                if j == 0:
+                    esfuerzo_alternante.append(fatiga[k])
+                elif j == 1:
+                    esfuerzo_medio.append(fatiga[k])
+                k += 1
 
+        # histograma SA
+        fig_sa = plt.figure(figsize=(8, 5), dpi=60)
+        Figure_sa = FigureCanvasTkAgg(fig_sa, master=self.master)
+        Figure_sa.get_tk_widget().place(x=560, y=50)
+        hist_sa = fig_sa.add_subplot(111)
+        fig_sa.subplots_adjust(top=0.90)
+        hist_sa.hist(esfuerzo_alternante, bins=int(math.sqrt(len(esfuerzo_alternante))), normed=False)
+        hist_sa.set_title("Histograma de Esfuerzo Alternante")
+        hist_sa.plot()
+        fig_sa.canvas.draw()
+
+        # histograma SM
+        fig_sm = plt.figure(figsize=(8, 5), dpi=60)
+        Figure_sm = FigureCanvasTkAgg(fig_sm, master=self.master)
+        Figure_sm.get_tk_widget().place(x=560, y=380)
+        hist_sm = fig_sm.add_subplot(111)
+        fig_sm.subplots_adjust(top=0.90)
+        hist_sm.hist(esfuerzo_medio, bins=int(math.sqrt(len(esfuerzo_medio))), normed=False)
+        hist_sm.set_title("Histograma de Esfuerzo Medio")
+        hist_sm.plot()
+        fig_sm.canvas.draw()
 
     def slfAnilisis(self):
         fig = plt.figure(1)
@@ -254,4 +289,5 @@ ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
 ventanaPrincipal.geometry("1024x700")
+ventanaPrincipal.deiconify()
 ventanaPrincipal.mainloop()
