@@ -8,12 +8,15 @@ except ImportError:
     # Python 2.x
     from Tkinter import *
 import matplotlib
+from matplotlib import cm
 
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
 import math
+from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 try:
     # Python 3.x
@@ -26,7 +29,7 @@ except ImportError:
 class App:
     def __init__(self, master):
         self.master = master
-        self.filebase = 0
+        self.filebase = 0  # variable que posee vector de archivo de presion
         self.btnLoad = Button(master, text="Load", command=self.loadPres).place(x=10, y=10)
         self.btnRcc = Button(master, text="RCC Analisys", command=self.onRccBtn).place(x=70, y=10)
         self.btnSlf = Button(master, text="SLF Analisys", command=self.slfAnilisis).place(x=180, y=10)
@@ -34,12 +37,28 @@ class App:
         self.btnExit = Button(master, text="Exit", command=quit).place(x=360, y=10)
 
         self.file_opt = options = {}
-
+        # opciones usadas para abrir archivos de extension .pres
         options['defaultextension'] = '.pres'
         options['filetypes'] = [('all files', '.*'), ('pressure files', '.pres')]
         options['initialdir'] = 'C:\\'
         options['parent'] = master
         options['title'] = 'Presssure'
+
+        self.file_min = options = {}
+        # opciones usadas para abrir archivos de extension .min
+        options['defaultextension'] = '.min'
+        options['filetypes'] = [('all files', '.*'), ('min psi', '.min')]
+        options['initialdir'] = 'C:\\'
+        options['parent'] = master
+        options['title'] = 'MinPressure'
+
+        self.file_max = options = {}
+        # opciones usadas para abrir archivos de extension .max
+        options['defaultextension'] = '.max'
+        options['filetypes'] = [('all files', '.*'), ('max psi', '.max')]
+        options['initialdir'] = 'C:\\'
+        options['parent'] = master
+        options['title'] = 'MaxPressure'
 
     def loadPres(self):
         all_data = self.getFile(self.file_opt)
@@ -57,16 +76,6 @@ class App:
             fig.canvas.draw()
 
             # espectro de presion
-
-            # dt = 0.01
-            # Fs = 1
-            # t = np.arange(0, 10, dt)
-            # nse = np.random.randn(len(t))
-            # r = np.exp(-t / 0.05)
-            # cnse = np.convolve(nse, r) * dt
-            # cnse = cnse[:len(t)]
-            # s = 0.1 * np.sin(2 * np.pi * t) + cnse
-            #
             figu = plt.figure(figsize=(10, 5), dpi=60)
             figura = FigureCanvasTkAgg(figu, master=self.master)
             figura.get_tk_widget().place(x=10, y=380)
@@ -79,11 +88,11 @@ class App:
             esp.plot(y, all_data)
             figu.canvas.draw()
 
-            # seteando el archivo obtenido
+            # seteando el archivo obtenido el archivo se setea para posterior utlizacion en algoritmo rainflow
             self.filebase = all_data
 
         else:
-            m = Message(self.master, text="Error open file")
+            m = Message(self.master, text="Error open file")  # mensaje lanzado si el archivo no pudo abrirse
 
     def findext(self):
         matrix_in = self.filebase
@@ -144,7 +153,7 @@ class App:
                     no += 1
                     data[no] = matrix_in[i + 1]
         # almacena datos en MATRIX_OUT
-
+        # redimensionando datos de salida
         data = data[:no]
         matrix_out = data
         return matrix_out
@@ -230,6 +239,7 @@ class App:
         esfuerzo_alternante = []
         esfuerzo_medio = []
         k = 0
+        # obteniendo los datos de esfuerzo alternante y esfuerzo medio
         for i in range(int(col / 3)):
             for j in range(3):
                 if j == 0:
@@ -238,7 +248,7 @@ class App:
                     esfuerzo_medio.append(fatiga[k])
                 k += 1
 
-        # histograma SA
+        # histograma SA (esfuerzo alternante)
         fig_sa = plt.figure(figsize=(8, 5), dpi=60)
         Figure_sa = FigureCanvasTkAgg(fig_sa, master=self.master)
         Figure_sa.get_tk_widget().place(x=560, y=50)
@@ -249,7 +259,7 @@ class App:
         hist_sa.plot()
         fig_sa.canvas.draw()
 
-        # histograma SM
+        # histograma SM e(sfuerzo medio)
         fig_sm = plt.figure(figsize=(8, 5), dpi=60)
         Figure_sm = FigureCanvasTkAgg(fig_sm, master=self.master)
         Figure_sm.get_tk_widget().place(x=560, y=380)
@@ -261,15 +271,24 @@ class App:
         fig_sm.canvas.draw()
 
     def slfAnilisis(self):
-        fig = plt.figure(1)
-        plt.ion()
-        t = np.arange(0.0, 3.0, 0.01)
-        s = np.sin(np.pi * t)
-        plt.plot(t, s)
+        meses = 5
+        time = meses / 12
+        pload = self.filebase
+        s1min = self.getFileMin_Max(self.file_min)
+        s2min = self.getFileMin_Max(self.file_min)
+        s3min = self.getFileMin_Max(self.file_min)
+        s1max = self.getFileMin_Max(self.file_max)
+        s2max = self.getFileMin_Max(self.file_max)
+        s3max = self.getFileMin_Max(self.file_max)
+        smin =[]
+        smax =[]
+        smin.extend(s1min)
+        smin.extend(s2min)
+        smin.extend(s3min)
+        smax.extend(s1max)
+        smax.extend(s2max)
+        smax.extend(s3max)
 
-        canvas = FigureCanvasTkAgg(fig, master=self.master)
-        plot_widget = canvas.get_tk_widget()
-        plot_widget.grid(row=0, column=0)
 
     def getFile(self, options):
         filename = askopenfilename(**options)
@@ -280,6 +299,20 @@ class App:
             all_data = np.zeros(len(data))
             for i in range(len(data)):
                 all_data[i] = float(data[i])
+
+            f.close()
+        return all_data
+
+    def getFileMin_Max(self, options):
+        filename = askopenfilename(**options)
+        if filename:
+            f = open(filename)
+            data = [line.replace("\n", " ")[0:] for line in f.readlines()[0:]]
+
+            all_data = np.zeros(len(data))
+            for i in range(len(data)):
+                datos = data[i].split()
+                all_data[i] = float(datos[1])
 
             f.close()
         return all_data
