@@ -1,5 +1,6 @@
 # coding=utf-8
 import numpy as np
+import rainflow
 
 try:
     # Python 3.x
@@ -280,15 +281,35 @@ class App:
         s1max = self.getFileMin_Max(self.file_max)
         s2max = self.getFileMin_Max(self.file_max)
         s3max = self.getFileMin_Max(self.file_max)
-        smin =[]
-        smax =[]
-        smin.extend(s1min)
-        smin.extend(s2min)
-        smin.extend(s3min)
-        smax.extend(s1max)
-        smax.extend(s2max)
-        smax.extend(s3max)
+        smin = []
+        smax = []
+        smin.append(s1min)
+        smin.append(s2min)
+        smin.append(s3min)
+        smax.append(s1max)
+        smax.append(s2max)
+        smax.append(s3max)
 
+        # calculando la matriz de transferencia
+        n = len(smin[1]) / 3
+        s1min = smin[2][1:n]
+        s2min = smin[2][n + 1:2 * n]
+        s3min = smin[2][2 * n + 1:3 * n]
+        s1max = smax[2][1:n]
+        s2max = smax[2][n + 1:2 * n]
+        s3max = smax[2][2 * n + 1:3 * n]
+        ds1 = s1max - s1min
+        ds2 = s2max - s2min
+        ds3 = s3max - s3min
+
+        # calculan funcion de transferencia
+        prmin = min(pload)
+        prmax = max(pload)
+        TF1 = ds1 / (prmax - prmin)
+        TF2 = ds2 / (prmax - prmin)
+        TF3 = ds3 / (prmax - prmin)
+
+        amp, mean, cyc = rainflow._rainflow(pload)
 
     def getFile(self, options):
         filename = askopenfilename(**options)

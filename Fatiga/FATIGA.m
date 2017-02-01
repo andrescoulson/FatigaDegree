@@ -24,7 +24,7 @@ smax = [s1max;s2max;s3max];
 
 %calculo de variacion von mises segun API 579
 fprintf('%s\n','-> Calculando funcion de transferencia ...');
-n=length(smin(:,1))/3;
+n=length(smin(:,1)) /3;
 s1min = smin(1:n,2);
 s2min = smin(n+1:2*n,2);
 s3min = smin(2*n+1:3*n,2);

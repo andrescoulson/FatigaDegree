@@ -1,94 +1,125 @@
-# coding: utf-8
-"""
-Implements rainflow cycle counting algorythm for fatigue analysis
-according to section 5.4.4 in ASTM E1049-85 (2011).
-"""
-from collections import deque, defaultdict
+# coding=utf-8
+import ctypes
+from numpy.ctypeslib import ndpointer
+import numpy as np
+import os
+
+_file = 'rainflow'
+_path = os.path.join(*(os.path.split(__file__)[:-1] + (_file,)))
+_rf = ctypes.cdll.LoadLibrary(_path)
 
 
-def reversals(series):
+def _sig2ext(sig, time_sig=None, clsn=-1):
+    """Converts signal ``sig`` to turning  points used by ``rainflow``. The
+    syntax is: ::
+        (ntp, ext, exttime) = sig2ext(sig, clsn, [time_vals=None])
+    where ``ntp`` is the number of turning points, ``ext`` is a turning-point
+    signal and ``exttime`` are the corresponding time values.
+    :param sig: signal as numpy array
+    :param time_sig: time data of the signal, if `None` time is assumed as 0, 1, 2,...
+    :param clsn: number of classes (pass -1 if not to be used, i.e., no divisions into classes)
+    :return (ntp, ext, exttime):
     """
-    A generator function which iterates over the reversals in the iterable
-    *series*. Reversals are the points at which the first
-    derivative on the series changes sign. The generator never yields
-    the first and the last points in the series.
+    sig = np.asarray(sig, dtype=float)
+    sig = np.ascontiguousarray(sig)
+    ext = np.ascontiguousarray(np.zeros_like(sig))
+    exttime = np.ascontiguousarray(np.zeros_like(sig))
+    try:
+        __sig2ext = _rf.sig2ext
+        __sig2ext.restype = ctypes.c_int
+        if time_sig is None:
+            __sig2ext.argtypes = [ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                                  ctypes.c_voidp,  # ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                                  ctypes.c_int,
+                                  ctypes.c_long,
+                                  ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                                  ndpointer(ctypes.c_double, flags="C_CONTIGUOUS")]
+            ntp = __sig2ext(sig, None, len(sig), clsn,
+                            ext, exttime)
+        else:
+            __sig2ext.argtypes = [ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                                  ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                                  ctypes.c_int,
+                                  ctypes.c_long,
+                                  ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                                  ndpointer(ctypes.c_double, flags="C_CONTIGUOUS")]
+            time_sig = np.asarray(time_sig, dtype=float)
+            time_sig = np.ascontiguousarray(time_sig)
+            ntp = __sig2ext(sig, time_sig, len(sig), clsn,
+
+                            ext, exttime)
+    except:
+        raise Exception('sig2ext raised exception.')
+
+    return (ntp, ext, exttime)
+
+
+def _rainflow(ext, exttime=None):
+    """Rainflow counting array_ext and array_t are results from sig2ext
+    :param ext: is a turning-point signal and .
+    :param exttime: are the corresponding time values
+    :return: (cnr, rf)
+           cnr: the number nonzero of rows in the rf matrix
+           rf[:, 0] Cycles amplitude,
+           rf[:, 1] Cycles mean value,
+           rf[:, 2] Number of cycles (0.5 or 1.0),
+           rf[:, 3] Begining time (when input includes exttime),
+           rf[:, 4] Cycle period (when input includes exttime),
     """
-    series = iter(series)
-    
-    x_last, x = next(series), next(series)
-    d_last = (x - x_last)
-    
-    for x_next in series:
-        if x_next == x:
-            continue
-        d_next = x_next - x
-        if d_last * d_next < 0:
-            yield x
-        x_last, x = x, x_next
-        d_last = d_next
+    ext = np.ascontiguousarray(ext)
+    try:
+        _rf5 = _rf.rf5
+        _rf5.restype = ctypes.c_int
+        _rf3 = _rf.rf3
+        _rf3.restype = ctypes.c_int
+
+        if exttime is None:
+            _rf3.argtypes = [ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                             ctypes.c_int,
+                             ndpointer(ctypes.c_double, flags="C_CONTIGUOUS")]
+            array_out = np.ascontiguousarray(np.zeros((len(ext), 3)))
+            cnr = _rf3(ext, len(ext), array_out)
+        else:
+            exttime = np.ascontiguousarray(exttime)
+            _rf5.argtypes = [ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                             ctypes.c_int,
+                             ndpointer(ctypes.c_double, flags="C_CONTIGUOUS"),
+                             ndpointer(ctypes.c_double, flags="C_CONTIGUOUS")]
+            array_out = np.ascontiguousarray(np.zeros((len(ext), 5)))
+            cnr = _rf5(ext, len(ext), exttime, array_out)
+    except:
+        raise Exception('_rainflow raised exception.')
+    return cnr, array_out
 
 
-
-def extract_cycles(series):
+def rainflow(sig, time_sig=None, clsn=-1):
+    """Rainflow counting method
+        (amplitude, mean, cycles) = rainflow(sig, time_sig, clsn) #if time_sig=None
+        (amplitude, mean, cycles, start_time, period) = rainflow(sig, time_sig, clsn)
+    :param sig: signal as numpy array
+    :param time_sig: time data of the signal, if `None` time is assumed as 0, 1, 2,...
+    :param clsn: number of classes (pass -1 if not to be used, i.e., no divisions into classes)
+    :return:
+           amplitude:  Cycles amplitude,
+           mean:       Cycles mean value,
+           cycles:     Number of cycles (0.5 or 1.0),
+           start_time: Begining time (when input includes exttime),
+           period:     Cycle period (when input includes exttime),
     """
-    Returns two lists: the first one containig full cycles and the second
-    containing one-half cycles. The cycles are extracted from the iterable
-    *series* according to section 5.4.4 in ASTM E1049 (2011).
-    """
-    points = deque()
-    full, half = [], []
-
-    for x in reversals(series):
-        points.append(x)
-        while len(points) >= 3:
-            # Form ranges X and Y from the three most recent points
-            X = abs(points[-2] - points[-1])
-            Y = abs(points[-3] - points[-2])
-
-            if X < Y:
-                # Read the next point
-                break
-            elif len(points) == 3:
-                # Y contains the starting point
-                # Count Y as one-half cycle and discard the first point
-                half.append(Y)
-                points.popleft()
-            else:
-                # Count Y as one cycle and discard the peak and the valley of Y
-                full.append(Y)
-                last = points.pop()
-                points.pop()
-                points.pop()
-                points.append(last)
+    (ntp, ext, exttime) = _sig2ext(sig=sig, time_sig=time_sig, clsn=clsn)
+    if time_sig is None:
+        (_, rf) = _rainflow(ext[:ntp])
     else:
-        # Count the remaining ranges as one-half cycles
-        while len(points) > 1:
-            half.append(abs(points[-2] - points[-1]))
-            points.pop()
-    return full, half
+        (_, rf) = _rainflow(ext[:ntp], exttime[:ntp])
 
+    up_to = np.where(rf[:, 0] == 0, )[0][0]
 
-
-def count_cycles(series, ndigits=None):
-    """
-    Returns a sorted list containig pairs of cycle magnitude and count.
-    One-half cycles are counted as 0.5, so the returned counts may not be
-    whole numbers. The cycles are extracted from the iterable *series*
-    using the extract_cycles function. If *ndigits* is given the cycles
-    will be rounded to the given number of digits before counting.
-    """
-    full, half = extract_cycles(series)
-    
-    # Round the cycles if requested
-    if ndigits is not None:
-        full = (round(x, ndigits) for x in full)
-        half = (round(x, ndigits) for x in half)
-    
-    # Count cycles
-    counts = defaultdict(float)
-    for x in full:
-        counts[x] += 1.0
-    for x in half:
-        counts[x] += 0.5
-    
-    return sorted(counts.items())
+    amplitude = rf[:up_to, 0]
+    mean = rf[:up_to, 1]
+    cycles = rf[:up_to, 2]
+    if time_sig is None:
+        return amplitude, mean, cycles
+    else:
+        start_time = rf[:up_to, 3]
+        period = rf[:up_to, 4]
+        return amplitude, mean, cycles, start_time, period
