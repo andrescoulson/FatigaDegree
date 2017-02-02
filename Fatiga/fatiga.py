@@ -26,6 +26,14 @@ except ImportError:
     # Python 2.x
     from tkFileDialog import askopenfilename
 
+try:
+    # Python 3.x
+    from tkinter import messagebox as TkMessage
+except ImportError:
+    # Python 2.x
+    import tkMessageBox as TkMessage
+import operator
+
 
 class App:
     def __init__(self, master):
@@ -272,44 +280,161 @@ class App:
         fig_sm.canvas.draw()
 
     def slfAnilisis(self):
-        meses = 5
-        time = meses / 12
+        # calcula funcion de transferencia para cada nodo en el modelo
         pload = self.filebase
-        s1min = self.getFileMin_Max(self.file_min)
-        s2min = self.getFileMin_Max(self.file_min)
-        s3min = self.getFileMin_Max(self.file_min)
-        s1max = self.getFileMin_Max(self.file_max)
-        s2max = self.getFileMin_Max(self.file_max)
-        s3max = self.getFileMin_Max(self.file_max)
-        smin = []
-        smax = []
-        smin.append(s1min)
-        smin.append(s2min)
-        smin.append(s3min)
-        smax.append(s1max)
-        smax.append(s2max)
-        smax.append(s3max)
+        if len(pload) > 0:
+            meses = 5
+            time = meses / 12
+            s1min = self.getFileMin_Max(self.file_min)
+            s2min = self.getFileMin_Max(self.file_min)
+            s3min = self.getFileMin_Max(self.file_min)
+            s1max = self.getFileMin_Max(self.file_max)
+            s2max = self.getFileMin_Max(self.file_max)
+            s3max = self.getFileMin_Max(self.file_max)
+            smin = []
+            smax = []
+            smin.append(s1min)
+            smin.append(s2min)
+            smin.append(s3min)
+            smax.append(s1max)
+            smax.append(s2max)
+            smax.append(s3max)
 
-        # calculando la matriz de transferencia
-        n = len(smin[1]) / 3
-        s1min = smin[2][1:n]
-        s2min = smin[2][n + 1:2 * n]
-        s3min = smin[2][2 * n + 1:3 * n]
-        s1max = smax[2][1:n]
-        s2max = smax[2][n + 1:2 * n]
-        s3max = smax[2][2 * n + 1:3 * n]
-        ds1 = s1max - s1min
-        ds2 = s2max - s2min
-        ds3 = s3max - s3min
+            # calculando la matriz de transferencia
+            n = int(len(smin[1]) / 3)
+            s1min = smin[2][0:n]
+            s2min = smin[2][n + 1:2 * n]
+            s3min = smin[2][2 * n + 1:3 * n]
+            s1max = smax[2][0:n]
+            s2max = smax[2][n + 1:2 * n]
+            s3max = smax[2][2 * n + 1:3 * n]
+            ds1 = s1max - s1min
+            ds2 = s2max - s2min
+            ds3 = s3max - s3min
 
-        # calculan funcion de transferencia
-        prmin = min(pload)
-        prmax = max(pload)
-        TF1 = ds1 / (prmax - prmin)
-        TF2 = ds2 / (prmax - prmin)
-        TF3 = ds3 / (prmax - prmin)
+            # calculan funcion de transferencia
+            prmin = min(pload)
+            prmax = max(pload)
+            TF1 = ds1 / (prmax - prmin)
+            TF2 = ds2 / (prmax - prmin)
+            TF3 = ds3 / (prmax - prmin)
+            """ algoritmo rainflow tp = turning points
+              amp = amplitud
+              mean =  media
+              cyc = cyclos
+            """
+            tp, ext, extt = rainflow._sig2ext(pload)
+            amp, mean, cyc = rainflow.rainflow(pload)  # rainflow
+            ni = cyc
 
-        amp, mean, cyc = rainflow._rainflow(pload)
+            DP = 2 * amp[:]  # Palt = 1/2(pmax-pmin)
+            MP = mean  # Pmean = 1/2(pmax-pmin)
+
+            # calcula daño para cada ciclo y daño acumulado
+            # constantes tomadas de la tabla F.13 API 579
+            C1a = 2.254510E+00
+            C2a = -4.642236E-01
+            C3a = -8.312745E-01
+            C4a = 8.634660E-02
+            C5a = 2.020834E-01
+            C6a = -6.940535E-03
+            C7a = -2.079726E-02
+            C8a = 2.010235E-04
+            C9a = 7.137717E-04
+            C10a = 0.0
+            C11a = 0.0
+
+            C1b = 7.999502E+00
+            C2b = 5.832491E-02
+            C3b = 1.500851E-01
+            C4b = 1.273659E-04
+            C5b = -5.263661E-05
+            C6b = 0.0
+            C7b = 0.0
+            C8b = 0.0
+            C9b = 0.0
+            C10b = 0.0
+            C11b = 0.0
+
+            # calculando daño acumulado
+            # factores para modificacion de resistencia a la fatiga
+
+            Cus = 1.0
+            Et = 29.4e6
+            Efc = 28.3e6
+            Kff = 1.0
+            Kee = 1.0
+            Ka = 0.45  # factor acabado superficial
+            Kb = 1.00  # Factor de Tamaño
+            Kc = 1.00  # Factor de carga
+            Kd = 1.00  # Factor de temperatura
+            Ke = 1.00  # Factor de confiabilidad
+            Kf = 1.00  # Factores misceláneos
+            # Sf = Ka*Kb*Kc*Kd*Ke*Kf*Sf;
+
+            ndp = len(DP)
+            Sa = np.zeros((ndp, 1))
+            Dk = np.zeros(n)
+
+            kkk = 0
+            X = 0
+
+            for i in range(ndp):
+                for j in range(n):
+                    Sa[i][j] = 1 / math.sqrt(2) * math.sqrt(
+                        (TF1(j) - TF2(j)) ** 2 + (TF2(j) - TF3(j)) ** 2 + (TF3(j) - TF1(j)) ** 2) * DP(i)
+                    Sa[i][j] = Kff * Kee * Sa[i][j] / 2
+                    Sa[i][j] = Sa[i][j] / 1e3  # convierte a kpsi
+
+                    # las siguientes ecuacuones estan en kpsi
+
+                    sc = Sa[i][j] / Cus
+                    if Sa[i][j] <= 31 and Sa[i][j] >= 7:
+                        X = (C1a + C3a * sc + C5a * sc ^ 2 + C7a * sc ^ 3 + C9a * sc ^ 4 + C11a * sc ^ 5) / (
+                            1 + C2a * sc + C4a * sc ^ 2 + C6a * sc ^ 3 + C8a * sc ^ 4 + C10a * sc ^ 5)
+                    else:
+
+                        X = (C1b + C3b * sc + C5b * sc ^ 2 + C7b * sc ^ 3 + C9b * sc ^ 4 + C11b * sc ^ 5) / (
+                            1 + C2b * sc + C4b * sc ^ 2 + C6b * sc ^ 3 + C8b * sc ^ 4 + C10b * sc ^ 5)
+
+                    # calcula el daño acumulado y vida para cada nodo para cada grupo de carga
+                    Nkji = 10 ^ X * (Et / Efc)
+                    dkji = ni[i] / Nkji
+                    Dk[j] += dkji
+            # determina el nodo con major daño acumulado (vida minima)
+            nd, val = max(enumerate(Dk), key=operator.itemgetter(1))
+
+            # calculando curva de sensibilidad
+            # grafica de sensibilidad de la vida a la variacion de DP
+            k = 0
+            Dfac = []
+            for i in self.frange(0.5, 1.5, 0.05):
+                Dfac.append(0)
+
+            for fac in self.frange(0.5, 1.5, 0.05):
+                k += 1
+                for i in range(ndp):
+                    sc = Sa[i][nd] * fac / Cus
+                    if 7 <= Sa[i][j] <= 31:
+                        X = (C1a + C3a * sc + C5a * sc ^ 2 + C7a * sc ^ 3 + C9a * sc ^ 4 + C11a * sc ^ 5) / (
+                            1 + C2a * sc + C4a * sc ^ 2 + C6a * sc ^ 3 + C8a * sc ^ 4 + C10a * sc ^ 5)
+                    else:
+                        X = (C1b + C3b * sc + C5b * sc ^ 2 + C7b * sc ^ 3 + C9b * sc ^ 4 + C11b * sc ^ 5) / (
+                            1 + C2b * sc + C4b * sc ^ 2 + C6b * sc ^ 3 + C8b * sc ^ 4 + C10b * sc ^ 5)
+
+                    # calcula el daño acumuluado para un factor de presion
+                    # dado para el nodo mas critico
+
+                    Dfac[k] += ni[i] / (10 ^ X * (Et / Efc))
+            # creando otra ventana para mostrar los valores
+            other_windown = Toplevel(self.master)
+            other_windown.wm_title("Slf Analisis")
+            other_windown.geometry("1024x600")
+            other_windown.deiconify
+
+
+        else:
+            TkMessage.showinfo("Error file", "Press file error ")
 
     def getFile(self, options):
         filename = askopenfilename(**options)
@@ -338,10 +463,16 @@ class App:
             f.close()
         return all_data
 
+    def frange(start, stop, step):
+        i = start
+        while i < stop:
+            yield i
+            i += step
+
 
 ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
-ventanaPrincipal.geometry("1024x700")
+ventanaPrincipal.geometry("1024x900")
 ventanaPrincipal.deiconify()
 ventanaPrincipal.mainloop()
