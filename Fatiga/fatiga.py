@@ -1,6 +1,5 @@
 # coding=utf-8
 import numpy as np
-import rainflow
 
 try:
     # Python 3.x
@@ -242,47 +241,50 @@ class App:
         return data_out, col
 
     def onRccBtn(self):
-        dataout = self.findext()
-        fatiga, col = self.rainflow(dataout)
-        # obteniendo datos esfuerzos
-        esfuerzo_alternante = []
-        esfuerzo_medio = []
-        k = 0
-        # obteniendo los datos de esfuerzo alternante y esfuerzo medio
-        for i in range(int(col / 3)):
-            for j in range(3):
-                if j == 0:
-                    esfuerzo_alternante.append(fatiga[k])
-                elif j == 1:
-                    esfuerzo_medio.append(fatiga[k])
-                k += 1
+        if ~(self.filebase is None):
+            dataout = self.findext()
+            fatiga, col = self.rainflow(dataout)
+            # obteniendo datos esfuerzos
+            esfuerzo_alternante = []
+            esfuerzo_medio = []
+            k = 0
+            # obteniendo los datos de esfuerzo alternante y esfuerzo medio
+            for i in range(int(col / 3)):
+                for j in range(3):
+                    if j == 0:
+                        esfuerzo_alternante.append(fatiga[k])
+                    elif j == 1:
+                        esfuerzo_medio.append(fatiga[k])
+                    k += 1
 
-        # histograma SA (esfuerzo alternante)
-        fig_sa = plt.figure(figsize=(8, 5), dpi=60)
-        Figure_sa = FigureCanvasTkAgg(fig_sa, master=self.master)
-        Figure_sa.get_tk_widget().place(x=560, y=50)
-        hist_sa = fig_sa.add_subplot(111)
-        fig_sa.subplots_adjust(top=0.90)
-        hist_sa.hist(esfuerzo_alternante, bins=int(math.sqrt(len(esfuerzo_alternante))), normed=False)
-        hist_sa.set_title("Histograma de Esfuerzo Alternante")
-        hist_sa.plot()
-        fig_sa.canvas.draw()
+            # histograma SA (esfuerzo alternante)
+            fig_sa = plt.figure(figsize=(8, 5), dpi=60)
+            Figure_sa = FigureCanvasTkAgg(fig_sa, master=self.master)
+            Figure_sa.get_tk_widget().place(x=560, y=50)
+            hist_sa = fig_sa.add_subplot(111)
+            fig_sa.subplots_adjust(top=0.90)
+            hist_sa.hist(esfuerzo_alternante, bins=int(math.sqrt(len(esfuerzo_alternante))), normed=False)
+            hist_sa.set_title("Histograma de Esfuerzo Alternante")
+            hist_sa.plot()
+            fig_sa.canvas.draw()
 
-        # histograma SM e(sfuerzo medio)
-        fig_sm = plt.figure(figsize=(8, 5), dpi=60)
-        Figure_sm = FigureCanvasTkAgg(fig_sm, master=self.master)
-        Figure_sm.get_tk_widget().place(x=560, y=380)
-        hist_sm = fig_sm.add_subplot(111)
-        fig_sm.subplots_adjust(top=0.90)
-        hist_sm.hist(esfuerzo_medio, bins=int(math.sqrt(len(esfuerzo_medio))), normed=False)
-        hist_sm.set_title("Histograma de Esfuerzo Medio")
-        hist_sm.plot()
-        fig_sm.canvas.draw()
+            # histograma SM e(sfuerzo medio)
+            fig_sm = plt.figure(figsize=(8, 5), dpi=60)
+            Figure_sm = FigureCanvasTkAgg(fig_sm, master=self.master)
+            Figure_sm.get_tk_widget().place(x=560, y=380)
+            hist_sm = fig_sm.add_subplot(111)
+            fig_sm.subplots_adjust(top=0.90)
+            hist_sm.hist(esfuerzo_medio, bins=int(math.sqrt(len(esfuerzo_medio))), normed=False)
+            hist_sm.set_title("Histograma de Esfuerzo Medio")
+            hist_sm.plot()
+            fig_sm.canvas.draw()
+        else:
+            TkMessage.showinfo("Error file", "Press file error ")
 
     def slfAnilisis(self):
         # calcula funcion de transferencia para cada nodo en el modelo
         pload = self.filebase
-        if len(pload) > 0:
+        if ~(pload is None):
             meses = 5
             time = meses / 12
             s1min = self.getFileMin_Max(self.file_min)
@@ -323,12 +325,12 @@ class App:
               mean =  media
               cyc = cyclos
             """
-            tp, ext, extt = rainflow._sig2ext(pload)
-            amp, mean, cyc = rainflow.rainflow(pload)  # rainflow
-            ni = cyc
+            tp = self.findext()
+            rf = self.rainflow(tp)  # rainflow
+            ni = rf[2, :]
 
-            DP = 2 * amp[:]  # Palt = 1/2(pmax-pmin)
-            MP = mean  # Pmean = 1/2(pmax-pmin)
+            DP = 2 * rf[0, :]  # Palt = 1/2(pmax-pmin)
+            MP = rf[2, :]  # Pmean = 1/2(pmax-pmin)
 
             # calcula daño para cada ciclo y daño acumulado
             # constantes tomadas de la tabla F.13 API 579
@@ -398,9 +400,10 @@ class App:
                             1 + C2b * sc + C4b * sc ^ 2 + C6b * sc ^ 3 + C8b * sc ^ 4 + C10b * sc ^ 5)
 
                     # calcula el daño acumulado y vida para cada nodo para cada grupo de carga
-                    Nkji = 10 ^ X * (Et / Efc)
-                    dkji = ni[i] / Nkji
-                    Dk[j] += dkji
+
+                    Nkji = 10 ^ X * (Et / Efc)  # vida acumulada en el cicli Dpi en el nodo "j"
+                    dkji = ni[i] / Nkji  # daño generado en el ciclo Dpi en el nodo "j"
+                    Dk[j] += dkji  # daño acumulado en el nodo "j"
             # determina el nodo con major daño acumulado (vida minima)
             nd, val = max(enumerate(Dk), key=operator.itemgetter(1))
 
@@ -424,7 +427,6 @@ class App:
 
                     # calcula el daño acumuluado para un factor de presion
                     # dado para el nodo mas critico
-
                     Dfac[k] += ni[i] / (10 ^ X * (Et / Efc))
             # creando otra ventana para mostrar los valores
             other_windown = Toplevel(self.master)
@@ -473,6 +475,6 @@ class App:
 ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
-ventanaPrincipal.geometry("1024x900")
+ventanaPrincipal.geometry("1024x700")
 ventanaPrincipal.deiconify()
 ventanaPrincipal.mainloop()
