@@ -278,13 +278,44 @@ class App:
             hist_sm.set_title("Histograma de Esfuerzo Medio")
             hist_sm.plot()
             fig_sm.canvas.draw()
+
+
+            # histograma en 3d rainflow
+
+            other_windown = Toplevel(self.master)
+            other_windown.geometry("700x500")
+            other_windown.deiconify()
+
+            fig_sm_3d = plt.figure(figsize=(9, 6), dpi=70)
+            fig_sm_3d.suptitle("Histograma 3D Rainflow")
+            Figure_sm_3d = FigureCanvasTkAgg(fig_sm_3d, master=other_windown)
+            Figure_sm_3d.get_tk_widget().place(x=20, y=20)
+            ax = fig_sm_3d.add_subplot(111, projection='3d')
+            fig_sm_3d.subplots_adjust(top=0.90)
+            hist, xedges, yedges = np.histogram2d(esfuerzo_medio, esfuerzo_alternante, bins=4)
+            xpos, ypos = np.meshgrid(xedges[:-1] + 0.25, yedges[:-1] + 0.25)
+            xpos = xpos.flatten('F')
+            ypos = ypos.flatten('F')
+            zpos = np.zeros_like(xpos)
+
+            dx = np.ones_like(zpos)
+            dy = dx.copy()
+            dz = hist.flatten()
+
+            ax.bar3d(xpos, ypos, zpos, dx, dy, dz, color='b', zsort='average')
+            ax.set_xlabel("Esfuerzo medio")
+            ax.set_ylabel("Esfuerzo alternate")
+            ax.set_zlabel("Ciclos")
+            ax.plot()
+
+            fig_sm_3d.canvas.draw()
         else:
             TkMessage.showinfo("Error file", "Press file error ")
 
     def slfAnilisis(self):
         # calcula funcion de transferencia para cada nodo en el modelo
         pload = self.filebase
-        if ~(pload is None):
+        if ~(self.filebase is None) and pload != 0:
             meses = 5
             time = meses / 12
             s1min = self.getFileMin_Max(self.file_min)
@@ -320,11 +351,7 @@ class App:
             TF1 = ds1 / (prmax - prmin)
             TF2 = ds2 / (prmax - prmin)
             TF3 = ds3 / (prmax - prmin)
-            """ algoritmo rainflow tp = turning points
-              amp = amplitud
-              mean =  media
-              cyc = cyclos
-            """
+
             tp = self.findext()
             rf = self.rainflow(tp)  # rainflow
             ni = rf[2, :]
@@ -428,14 +455,10 @@ class App:
                     # calcula el daño acumuluado para un factor de presion
                     # dado para el nodo mas critico
                     Dfac[k] += ni[i] / (10 ^ X * (Et / Efc))
-            # creando otra ventana para mostrar los valores
-            other_windown = Toplevel(self.master)
-            other_windown.wm_title("Slf Analisis")
-            other_windown.geometry("1024x600")
-            other_windown.deiconify
-
+                    # creando otra ventana para mostrar los valores
 
         else:
+
             TkMessage.showinfo("Error file", "Press file error ")
 
     def getFile(self, options):
