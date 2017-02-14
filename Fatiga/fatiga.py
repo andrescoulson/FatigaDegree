@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import math
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
-
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 try:
     # Python 3.x
     from tkinter.filedialog import askopenfilename
@@ -279,35 +279,41 @@ class App:
             hist_sm.plot()
             fig_sm.canvas.draw()
 
-
             # histograma en 3d rainflow
 
+            # creamos una nueva ventana hija del proyecto principal
             other_windown = Toplevel(self.master)
             other_windown.geometry("700x500")
             other_windown.deiconify()
 
+            # se añada una nueva figura a esa ventana creada
             fig_sm_3d = plt.figure(figsize=(9, 6), dpi=70)
             fig_sm_3d.suptitle("Histograma 3D Rainflow")
             Figure_sm_3d = FigureCanvasTkAgg(fig_sm_3d, master=other_windown)
             Figure_sm_3d.get_tk_widget().place(x=20, y=20)
-            ax = fig_sm_3d.add_subplot(111, projection='3d')
             fig_sm_3d.subplots_adjust(top=0.90)
-            hist, xedges, yedges = np.histogram2d(esfuerzo_medio, esfuerzo_alternante, bins=4)
-            xpos, ypos = np.meshgrid(xedges[:-1] + 0.25, yedges[:-1] + 0.25)
-            xpos = xpos.flatten('F')
-            ypos = ypos.flatten('F')
-            zpos = np.zeros_like(xpos)
+            ax2 = fig_sm_3d.add_subplot(111)
 
-            dx = np.ones_like(zpos)
-            dy = dx.copy()
-            dz = hist.flatten()
+            # se obtiene los rangos para los ejes
+            gridx = np.linspace(min(esfuerzo_medio), max(esfuerzo_medio), 11)
+            gridy = np.linspace(min(esfuerzo_alternante), max(esfuerzo_alternante), 11)
+            #  se crea un histograma en 2d a partir de los datos SA SM Cycles
+            hist, xedges, yedges = np.histogram2d(esfuerzo_medio, esfuerzo_alternante, bins=[gridx, gridy])
 
-            ax.bar3d(xpos, ypos, zpos, dx, dy, dz, color='b', zsort='average')
-            ax.set_xlabel("Esfuerzo medio")
-            ax.set_ylabel("Esfuerzo alternate")
-            ax.set_zlabel("Ciclos")
-            ax.plot()
+            # pintamos el grafico dado en hist
+            myextent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+            im = ax2.imshow(hist.T, origin='low', extent=myextent, interpolation='nearest', aspect='auto')
 
+            # se coloca la barra al lado derecho corresponde al numero de ciclos
+
+            divider3 = make_axes_locatable(ax2)
+            cbar_ax = divider3.append_axes("right", size="8%", pad=0.05)
+            ax2.plot(esfuerzo_medio, esfuerzo_alternante, 'ro')
+            ax2.set_xlabel("Esfuerzo medio")
+            ax2.set_ylabel("Esfuerzo alternante")
+
+            # se muestra el widget creado
+            fig_sm_3d.colorbar(im, cax=cbar_ax)
             fig_sm_3d.canvas.draw()
         else:
             TkMessage.showinfo("Error file", "Press file error ")
@@ -498,6 +504,6 @@ class App:
 ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
-ventanaPrincipal.geometry("1024x700")
+ventanaPrincipal.geometry("1050x700")
 ventanaPrincipal.deiconify()
 ventanaPrincipal.mainloop()

@@ -2,8 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="fbb77178-ab41-48c1-a93b-09390009332a" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/Viewer.py" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modelo.vwr" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/modelo2.vwr" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fatiga.py" afterPath="$PROJECT_DIR$/fatiga.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pruebas.py" afterPath="$PROJECT_DIR$/pruebas.py" />
     </list>
     <ignored path="Fatiga.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -21,12 +27,12 @@
     <window id="1">
       <content type="file-editors">
         <state>
-          <leaf>
+          <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
             <file leaf-file-name="FATIGA.m" pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/FATIGA.m">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="-2034">
-                    <caret line="18" column="55" lean-forward="false" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
+                  <state relative-caret-position="468">
+                    <caret line="43" column="55" lean-forward="false" selection-start-line="43" selection-start-column="55" selection-end-line="43" selection-end-column="55" />
                     <folding />
                   </state>
                 </provider>
@@ -43,18 +49,29 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="fatiga.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="fatiga.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/fatiga.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="284" column="49" lean-forward="true" selection-start-line="284" selection-start-column="49" selection-end-line="284" selection-end-column="49" />
+            <state relative-caret-position="68">
+              <caret line="247" column="36" lean-forward="false" selection-start-line="247" selection-start-column="36" selection-end-line="247" selection-end-column="36" />
               <folding>
-                <element signature="e#2456#3803#0" expanded="false" />
-                <element signature="e#3836#5496#0" expanded="false" />
-                <element signature="e#5536#5658#0" expanded="false" />
-                <element signature="e#5700#8106#0" expanded="false" />
-                <element signature="e#11148#16881#0" expanded="false" />
+                <element signature="e#914#2477#0" expanded="false" />
+                <element signature="e#2511#3858#0" expanded="false" />
+                <element signature="e#3891#5551#0" expanded="false" />
+                <element signature="e#5591#5713#0" expanded="false" />
+                <element signature="e#5755#8161#0" expanded="false" />
+                <element signature="e#11785#17518#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="pruebas.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/pruebas.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="450">
+              <caret line="25" column="84" lean-forward="true" selection-start-line="25" selection-start-column="84" selection-end-line="25" selection-end-column="84" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -75,14 +92,34 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/fatiga.py" />
+        <option value="$PROJECT_DIR$/pruebas.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="894" />
-    <option name="y" value="24" />
+    <option name="x" value="327" />
+    <option name="y" value="68" />
     <option name="width" value="1048" />
     <option name="height" value="1012" />
+  </component>
+  <component name="ProjectInspectionProfilesVisibleTreeState">
+    <entry key="Project Default">
+      <profile-state>
+        <expanded-state>
+          <State>
+            <id />
+          </State>
+          <State>
+            <id>Python</id>
+          </State>
+        </expanded-state>
+        <selected-state>
+          <State>
+            <id>PyCompatibilityInspection</id>
+          </State>
+        </selected-state>
+      </profile-state>
+    </entry>
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -100,7 +137,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -115,7 +152,7 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -127,7 +164,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.fatiga">
+  <component name="RunManager" selected="Python.pruebas">
     <configuration default="false" name="fatiga" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -141,6 +178,23 @@
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="Fatiga" />
       <option name="SCRIPT_NAME" value="$PROJECT_DIR$/fatiga.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="pruebas" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Fatiga" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/pruebas.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
@@ -279,12 +333,14 @@
       <option name="USE_KEYWORD" value="false" />
       <method />
     </configuration>
-    <list size="1">
+    <list size="2">
       <item index="0" class="java.lang.String" itemvalue="Python.fatiga" />
+      <item index="1" class="java.lang.String" itemvalue="Python.pruebas" />
     </list>
     <recent_temporary>
-      <list size="1">
-        <item index="0" class="java.lang.String" itemvalue="Python.fatiga" />
+      <list size="2">
+        <item index="0" class="java.lang.String" itemvalue="Python.pruebas" />
+        <item index="1" class="java.lang.String" itemvalue="Python.fatiga" />
       </list>
     </recent_temporary>
   </component>
@@ -306,23 +362,30 @@
       <option name="project" value="LOCAL" />
       <updated>1486506197372</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="3d listo">
+      <created>1487028211526</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1487028211526</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="894" y="24" width="1048" height="1012" extended-state="0" />
+    <frame x="327" y="68" width="1048" height="1012" extended-state="0" />
     <editor active="false" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="FLOATING" visible="true" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" x="1431" y="161" width="272" height="939" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30253026" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.30202776" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3991462" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
@@ -337,7 +400,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="implementando slf analisis elimine import rainflow falta graficas 3d y nueva grafica" />
-    <option name="LAST_COMMIT_MESSAGE" value="implementando slf analisis elimine import rainflow falta graficas 3d y nueva grafica" />
+    <MESSAGE value="3d listo" />
+    <option name="LAST_COMMIT_MESSAGE" value="3d listo" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -351,11 +415,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2456#3803#0" expanded="false" />
-            <element signature="e#3836#5496#0" expanded="false" />
-            <element signature="e#5536#5658#0" expanded="false" />
-            <element signature="e#5700#8106#0" expanded="false" />
-            <element signature="e#11148#16881#0" expanded="false" />
+            <element signature="e#914#2477#0" expanded="false" />
+            <element signature="e#2511#3858#0" expanded="false" />
+            <element signature="e#3891#5551#0" expanded="false" />
+            <element signature="e#5591#5713#0" expanded="false" />
+            <element signature="e#5755#8161#0" expanded="false" />
+            <element signature="e#11785#17518#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -365,11 +430,27 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2456#3803#0" expanded="false" />
-            <element signature="e#3836#5496#0" expanded="false" />
-            <element signature="e#5536#5658#0" expanded="false" />
-            <element signature="e#5700#8106#0" expanded="false" />
-            <element signature="e#11148#16881#0" expanded="false" />
+            <element signature="e#914#2477#0" expanded="false" />
+            <element signature="e#2511#3858#0" expanded="false" />
+            <element signature="e#3891#5551#0" expanded="false" />
+            <element signature="e#5591#5713#0" expanded="false" />
+            <element signature="e#5755#8161#0" expanded="false" />
+            <element signature="e#11785#17518#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/fatiga.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding>
+            <element signature="e#914#2477#0" expanded="false" />
+            <element signature="e#2511#3858#0" expanded="false" />
+            <element signature="e#3891#5551#0" expanded="false" />
+            <element signature="e#5591#5713#0" expanded="false" />
+            <element signature="e#5755#8161#0" expanded="false" />
+            <element signature="e#11785#17518#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -379,11 +460,12 @@
         <state relative-caret-position="4338">
           <caret line="241" column="0" lean-forward="false" selection-start-line="241" selection-start-column="0" selection-end-line="242" selection-end-column="0" />
           <folding>
-            <element signature="e#2456#3803#0" expanded="false" />
-            <element signature="e#3836#5496#0" expanded="false" />
-            <element signature="e#5536#5658#0" expanded="false" />
-            <element signature="e#5700#8106#0" expanded="false" />
-            <element signature="e#11148#16881#0" expanded="false" />
+            <element signature="e#914#2477#0" expanded="false" />
+            <element signature="e#2511#3858#0" expanded="false" />
+            <element signature="e#3891#5551#0" expanded="false" />
+            <element signature="e#5591#5713#0" expanded="false" />
+            <element signature="e#5755#8161#0" expanded="false" />
+            <element signature="e#11785#17518#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -393,11 +475,12 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#2456#3803#0" expanded="false" />
-            <element signature="e#3836#5496#0" expanded="false" />
-            <element signature="e#5536#5658#0" expanded="false" />
-            <element signature="e#5700#8106#0" expanded="false" />
-            <element signature="e#11148#16881#0" expanded="false" />
+            <element signature="e#914#2477#0" expanded="false" />
+            <element signature="e#2511#3858#0" expanded="false" />
+            <element signature="e#3891#5551#0" expanded="false" />
+            <element signature="e#5591#5713#0" expanded="false" />
+            <element signature="e#5755#8161#0" expanded="false" />
+            <element signature="e#11785#17518#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -411,23 +494,48 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/FATIGA.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2034">
-          <caret line="18" column="55" lean-forward="false" selection-start-line="18" selection-start-column="55" selection-end-line="18" selection-end-column="55" />
+        <state relative-caret-position="468">
+          <caret line="43" column="55" lean-forward="false" selection-start-line="43" selection-start-column="55" selection-end-line="43" selection-end-column="55" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fatiga.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="284" column="49" lean-forward="true" selection-start-line="284" selection-start-column="49" selection-end-line="284" selection-end-column="49" />
+        <state relative-caret-position="68">
+          <caret line="247" column="36" lean-forward="false" selection-start-line="247" selection-start-column="36" selection-end-line="247" selection-end-column="36" />
           <folding>
-            <element signature="e#2456#3803#0" expanded="false" />
-            <element signature="e#3836#5496#0" expanded="false" />
-            <element signature="e#5536#5658#0" expanded="false" />
-            <element signature="e#5700#8106#0" expanded="false" />
-            <element signature="e#11148#16881#0" expanded="false" />
+            <element signature="e#914#2477#0" expanded="false" />
+            <element signature="e#2511#3858#0" expanded="false" />
+            <element signature="e#3891#5551#0" expanded="false" />
+            <element signature="e#5591#5713#0" expanded="false" />
+            <element signature="e#5755#8161#0" expanded="false" />
+            <element signature="e#11785#17518#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modelo.vwr">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Viewer.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/pruebas.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="450">
+          <caret line="25" column="84" lean-forward="true" selection-start-line="25" selection-start-column="84" selection-end-line="25" selection-end-column="84" />
+          <folding />
         </state>
       </provider>
     </entry>
