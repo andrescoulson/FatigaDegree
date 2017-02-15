@@ -9,7 +9,7 @@ except ImportError:
     from Tkinter import *
 import matplotlib
 from matplotlib import cm
-
+import utils
 matplotlib.use("TkAgg")
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2TkAgg
 from matplotlib.figure import Figure
@@ -34,10 +34,12 @@ except ImportError:
 import operator
 
 
+
+
 class App:
     def __init__(self, master):
         self.master = master
-        self.filebase = 0  # variable que posee vector de archivo de presion
+        self.filebase = None  # variable que posee vector de archivo de presion
         self.btnLoad = Button(master, text="Load", command=self.loadPres).place(x=10, y=10)
         self.btnRcc = Button(master, text="RCC Analisys", command=self.onRccBtn).place(x=70, y=10)
         self.btnSlf = Button(master, text="SLF Analisys", command=self.slfAnilisis).place(x=180, y=10)
@@ -268,7 +270,7 @@ class App:
             hist_sa.plot()
             fig_sa.canvas.draw()
 
-            # histograma SM e(sfuerzo medio)
+            # histograma SM (esfuerzo medio)
             fig_sm = plt.figure(figsize=(8, 5), dpi=60)
             Figure_sm = FigureCanvasTkAgg(fig_sm, master=self.master)
             Figure_sm.get_tk_widget().place(x=560, y=380)
@@ -285,7 +287,7 @@ class App:
             other_windown = Toplevel(self.master)
             other_windown.geometry("700x500")
             other_windown.deiconify()
-
+            utils.center(other_windown)
             # se añada una nueva figura a esa ventana creada
             fig_sm_3d = plt.figure(figsize=(9, 6), dpi=70)
             fig_sm_3d.suptitle("Histograma 3D Rainflow")
@@ -321,7 +323,7 @@ class App:
     def slfAnilisis(self):
         # calcula funcion de transferencia para cada nodo en el modelo
         pload = self.filebase
-        if ~(self.filebase is None) and pload != 0:
+        if ~(self.filebase is None) :
             meses = 5
             time = meses / 12
             s1min = self.getFileMin_Max(self.file_min)
@@ -505,5 +507,6 @@ ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
 ventanaPrincipal.geometry("1050x700")
+utils.center(ventanaPrincipal)
 ventanaPrincipal.deiconify()
 ventanaPrincipal.mainloop()
