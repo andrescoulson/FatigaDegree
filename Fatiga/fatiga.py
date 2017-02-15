@@ -32,6 +32,7 @@ except ImportError:
     # Python 2.x
     import tkMessageBox as TkMessage
 import operator
+import os
 
 
 
@@ -40,6 +41,7 @@ class App:
     def __init__(self, master):
         self.master = master
         self.filebase = None  # variable que posee vector de archivo de presion
+        self.directoryImage()  #creando directorio de imagenes
         self.btnLoad = Button(master, text="Load", command=self.loadPres).place(x=10, y=10)
         self.btnRcc = Button(master, text="RCC Analisys", command=self.onRccBtn).place(x=70, y=10)
         self.btnSlf = Button(master, text="SLF Analisys", command=self.slfAnilisis).place(x=180, y=10)
@@ -70,6 +72,10 @@ class App:
         options['parent'] = master
         options['title'] = 'MaxPressure'
 
+    def directoryImage(self):
+        if not os.path.exists("image"):
+            os.makedirs("image")
+
     def loadPres(self):
         all_data = self.getFile(self.file_opt)
         if len(all_data) > 0:
@@ -83,6 +89,7 @@ class App:
             ax.hist(all_data, bins=int(math.sqrt(len(all_data))), normed=False)
             ax.set_title("Histograma de Presion")
             ax.plot()
+            fig.savefig('hist_pressure.eps', format='eps', dpi=1000)
             fig.canvas.draw()
 
             # espectro de presion
@@ -96,6 +103,7 @@ class App:
             esp.set_ylabel('Pressure [Psi]')
             y = np.arange(len(all_data))
             esp.plot(y, all_data)
+            figu.savefig('espect_pressure.eps', format='eps', dpi=1000)
             figu.canvas.draw()
 
             # seteando el archivo obtenido el archivo se setea para posterior utlizacion en algoritmo rainflow
@@ -268,6 +276,7 @@ class App:
             hist_sa.hist(esfuerzo_alternante, bins=int(math.sqrt(len(esfuerzo_alternante))), normed=False)
             hist_sa.set_title("Histograma de Esfuerzo Alternante")
             hist_sa.plot()
+            fig_sa.savefig('hist_SA.eps', format='eps', dpi=1000)
             fig_sa.canvas.draw()
 
             # histograma SM (esfuerzo medio)
@@ -279,6 +288,7 @@ class App:
             hist_sm.hist(esfuerzo_medio, bins=int(math.sqrt(len(esfuerzo_medio))), normed=False)
             hist_sm.set_title("Histograma de Esfuerzo Medio")
             hist_sm.plot()
+            fig_sm.savefig('hist_SM.eps', format='eps', dpi=1000)
             fig_sm.canvas.draw()
 
             # histograma en 3d rainflow
@@ -294,6 +304,7 @@ class App:
             Figure_sm_3d = FigureCanvasTkAgg(fig_sm_3d, master=other_windown)
             Figure_sm_3d.get_tk_widget().place(x=20, y=20)
             fig_sm_3d.subplots_adjust(top=0.90)
+
             ax2 = fig_sm_3d.add_subplot(111)
 
             # se obtiene los rangos para los ejes
@@ -316,6 +327,7 @@ class App:
 
             # se muestra el widget creado
             fig_sm_3d.colorbar(im, cax=cbar_ax)
+            fig_sm_3d.savefig('hist_3d_rainflow.eps', format='eps', dpi=1000)
             fig_sm_3d.canvas.draw()
         else:
             TkMessage.showinfo("Error file", "Press file error ")
