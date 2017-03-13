@@ -276,7 +276,7 @@ class App:
             hist_sa.hist(esfuerzo_alternante, bins=int(math.sqrt(len(esfuerzo_alternante))), normed=False)
             hist_sa.set_title("Histograma de Esfuerzo Alternante")
             hist_sa.plot()
-            fig_sa.savefig('hist_SA.eps', format='eps', dpi=1000)
+            #fig_sa.savefig('hist_SA.eps', format='eps', dpi=1000)
             fig_sa.canvas.draw()
 
             # histograma SM (esfuerzo medio)
@@ -288,7 +288,7 @@ class App:
             hist_sm.hist(esfuerzo_medio, bins=int(math.sqrt(len(esfuerzo_medio))), normed=False)
             hist_sm.set_title("Histograma de Esfuerzo Medio")
             hist_sm.plot()
-            fig_sm.savefig('hist_SM.eps', format='eps', dpi=1000)
+            #fig_sm.savefig('hist_SM.eps', format='eps', dpi=1000)
             fig_sm.canvas.draw()
 
             # histograma en 3d rainflow
@@ -327,7 +327,7 @@ class App:
 
             # se muestra el widget creado
             fig_sm_3d.colorbar(im, cax=cbar_ax)
-            fig_sm_3d.savefig('hist_3d_rainflow.eps', format='eps', dpi=1000)
+            #fig_sm_3d.savefig('hist_3d_rainflow.eps', format='eps', dpi=1000)
             fig_sm_3d.canvas.draw()
         else:
             TkMessage.showinfo("Error file", "Press file error ")
