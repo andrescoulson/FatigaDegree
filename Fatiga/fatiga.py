@@ -41,7 +41,6 @@ class App:
     def __init__(self, master):
         self.master = master
         self.filebase = None  # variable que posee vector de archivo de presion
-        self.directoryImage()  #creando directorio de imagenes
         self.btnLoad = Button(master, text="Load", command=self.loadPres).place(x=10, y=10)
         self.btnRcc = Button(master, text="RCC Analisys", command=self.onRccBtn).place(x=70, y=10)
         self.btnSlf = Button(master, text="SLF Analisys", command=self.slfAnilisis).place(x=180, y=10)
@@ -72,9 +71,7 @@ class App:
         options['parent'] = master
         options['title'] = 'MaxPressure'
 
-    def directoryImage(self):
-        if not os.path.exists("image"):
-            os.makedirs("image")
+
 
     def loadPres(self):
         all_data = self.getFile(self.file_opt)
@@ -89,13 +86,13 @@ class App:
             ax.hist(all_data, bins=int(math.sqrt(len(all_data))), normed=False)
             ax.set_title("Histograma de Presion")
             ax.plot()
-            fig.savefig('hist_pressure.eps', format='eps', dpi=1000)
+            #fig.savefig('hist_pressure.eps', format='eps', dpi=1000)
             fig.canvas.draw()
 
             # espectro de presion
             figu = plt.figure(figsize=(10, 5), dpi=60)
             figura = FigureCanvasTkAgg(figu, master=self.master)
-            figura.get_tk_widget().place(x=10, y=380)
+            figura.get_tk_widget().place(x=560, y=50)
             esp = figu.add_subplot(111)
             figu.subplots_adjust(top=0.90)
             esp.set_title("Espectro de Presion")
@@ -103,7 +100,7 @@ class App:
             esp.set_ylabel('Pressure [Psi]')
             y = np.arange(len(all_data))
             esp.plot(y, all_data)
-            figu.savefig('espect_pressure.eps', format='eps', dpi=1000)
+            #figu.savefig('espect_pressure.eps', format='eps', dpi=1000)
             figu.canvas.draw()
 
             # seteando el archivo obtenido el archivo se setea para posterior utlizacion en algoritmo rainflow
@@ -268,9 +265,9 @@ class App:
                     k += 1
 
             # histograma SA (esfuerzo alternante)
-            fig_sa = plt.figure(figsize=(8, 5), dpi=60)
+            fig_sa = plt.figure(figsize=(10, 4), dpi=60)
             Figure_sa = FigureCanvasTkAgg(fig_sa, master=self.master)
-            Figure_sa.get_tk_widget().place(x=560, y=50)
+            Figure_sa.get_tk_widget().place(x=10, y=360)
             hist_sa = fig_sa.add_subplot(111)
             fig_sa.subplots_adjust(top=0.90)
             hist_sa.hist(esfuerzo_alternante, bins=int(math.sqrt(len(esfuerzo_alternante))), normed=False)
@@ -280,9 +277,9 @@ class App:
             fig_sa.canvas.draw()
 
             # histograma SM (esfuerzo medio)
-            fig_sm = plt.figure(figsize=(8, 5), dpi=60)
+            fig_sm = plt.figure(figsize=(10, 4), dpi=60)
             Figure_sm = FigureCanvasTkAgg(fig_sm, master=self.master)
-            Figure_sm.get_tk_widget().place(x=560, y=380)
+            Figure_sm.get_tk_widget().place(x=560, y=360)
             hist_sm = fig_sm.add_subplot(111)
             fig_sm.subplots_adjust(top=0.90)
             hist_sm.hist(esfuerzo_medio, bins=int(math.sqrt(len(esfuerzo_medio))), normed=False)
@@ -293,16 +290,13 @@ class App:
 
             # histograma en 3d rainflow
 
-            # creamos una nueva ventana hija del proyecto principal
-            other_windown = Toplevel(self.master)
-            other_windown.geometry("700x500")
-            other_windown.deiconify()
-            utils.center(other_windown)
+
+
             # se añada una nueva figura a esa ventana creada
-            fig_sm_3d = plt.figure(figsize=(9, 6), dpi=70)
+            fig_sm_3d = plt.figure(figsize=(9, 5), dpi=70)
             fig_sm_3d.suptitle("Histograma 3D Rainflow")
-            Figure_sm_3d = FigureCanvasTkAgg(fig_sm_3d, master=other_windown)
-            Figure_sm_3d.get_tk_widget().place(x=20, y=20)
+            Figure_sm_3d = FigureCanvasTkAgg(fig_sm_3d, master=self.master)
+            Figure_sm_3d.get_tk_widget().place(x=10, y=620)
             fig_sm_3d.subplots_adjust(top=0.90)
 
             ax2 = fig_sm_3d.add_subplot(111)
@@ -329,6 +323,9 @@ class App:
             fig_sm_3d.colorbar(im, cax=cbar_ax)
             #fig_sm_3d.savefig('hist_3d_rainflow.eps', format='eps', dpi=1000)
             fig_sm_3d.canvas.draw()
+
+
+
         else:
             TkMessage.showinfo("Error file", "Press file error ")
 
@@ -349,9 +346,12 @@ class App:
             smin.append(s1min)
             smin.append(s2min)
             smin.append(s3min)
+
+
             smax.append(s1max)
             smax.append(s2max)
             smax.append(s3max)
+
 
             # calculando la matriz de transferencia
             n = int(len(smin[1]) / 3)
@@ -373,11 +373,32 @@ class App:
             TF3 = ds3 / (prmax - prmin)
 
             tp = self.findext()
-            rf = self.rainflow(tp)  # rainflow
-            ni = rf[2, :]
+            rf, col = self.rainflow(tp)  # rainflow
+            ni = []
+            k=0
+            for i in range(int(col / 3)):
+                for j in range(3):
+                    if j == 2:
+                        ni.append(rf[k])
+                    k += 1
 
-            DP = 2 * rf[0, :]  # Palt = 1/2(pmax-pmin)
-            MP = rf[2, :]  # Pmean = 1/2(pmax-pmin)
+            # Palt = 1/2(pmax-pmin)
+            k=0
+            DP =[]
+            for i in range(int(col / 3)):
+                for j in range(3):
+                    if j == 0:
+                        DP.append(2*rf[k])
+                    k += 1
+            # Pmean = 1/2(pmax-pmin)
+            MP=[]
+            k=0
+            for i in range(int(col / 3)):
+                for j in range(3):
+                    if j == 2:
+                        MP.append(rf[k])
+                    k += 1
+
 
             # calcula daño para cada ciclo y daño acumulado
             # constantes tomadas de la tabla F.13 API 579
@@ -431,8 +452,8 @@ class App:
             for i in range(ndp):
                 for j in range(n):
                     Sa[i][j] = 1 / math.sqrt(2) * math.sqrt(
-                        (TF1(j) - TF2(j)) ** 2 + (TF2(j) - TF3(j)) ** 2 + (TF3(j) - TF1(j)) ** 2) * DP(i)
-                    Sa[i][j] = Kff * Kee * Sa[i][j] / 2
+                        ((TF1(j) - TF2(j)) ** 2) + ((TF2(j) - TF3(j)) ** 2) + ((TF3(j) - TF1(j)) ** 2)) * DP(i)
+                    Sa[i][j] = (Kff * Kee * Sa[i][j]) / 2
                     Sa[i][j] = Sa[i][j] / 1e3  # convierte a kpsi
 
                     # las siguientes ecuacuones estan en kpsi
@@ -475,7 +496,25 @@ class App:
                     # calcula el daño acumuluado para un factor de presion
                     # dado para el nodo mas critico
                     Dfac[k] += ni[i] / (10 ^ X * (Et / Efc))
-                    # creando otra ventana para mostrar los valores
+
+            # grafica de sensibilidad de la vida a la variacion de DP
+            fig_slf = plt.figure(figsize=(10, 4), dpi=60)
+            Figure_slf = FigureCanvasTkAgg(fig_slf, master=self.master)
+            Figure_slf.get_tk_widget().place(x=560, y=360)
+            slf_curve = fig_slf.add_subplot(111)
+            fig_slf.subplots_adjust(top=0.90)
+
+            ydata =[]
+            for i in self.frange(0.5, 1.5, 0.05):
+                ydata.append(i)
+
+            #slf_curve.set_title("Espectro de Presion")
+            slf_curve.set_xlabel('P-Factor')
+            slf_curve.set_ylabel('Available Life [Years]')
+            slf_curve.plot(ydata, time / Dfac)
+
+            fig_slf.canvas.draw()
+
 
         else:
 
@@ -494,7 +533,7 @@ class App:
             f.close()
         return all_data
 
-    def getFileMin_Max(self, options):
+    def getFileMin_Max(self, options) :
         filename = askopenfilename(**options)
         if filename:
             f = open(filename)
@@ -518,7 +557,7 @@ class App:
 ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
-ventanaPrincipal.geometry("1050x700")
+ventanaPrincipal.geometry("1150x980")
 utils.center(ventanaPrincipal)
 ventanaPrincipal.deiconify()
 ventanaPrincipal.mainloop()
