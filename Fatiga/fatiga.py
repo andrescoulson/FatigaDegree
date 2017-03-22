@@ -355,6 +355,8 @@ class App:
 
             # calculando la matriz de transferencia
             n = int(len(smin[1]) / 3)
+
+            print n
             s1min = smin[2][0:n]
             s2min = smin[2][n + 1:2 * n]
             s3min = smin[2][2 * n + 1:3 * n]
@@ -372,8 +374,11 @@ class App:
             TF2 = ds2 / (prmax - prmin)
             TF3 = ds3 / (prmax - prmin)
 
+            #print len(TF1), len(TF2), len(TF3)
+
             tp = self.findext()
             rf, col = self.rainflow(tp)  # rainflow
+            print len (rf)
             ni = []
             k=0
             for i in range(int(col / 3)):
@@ -390,6 +395,7 @@ class App:
                     if j == 0:
                         DP.append(2*rf[k])
                     k += 1
+
             # Pmean = 1/2(pmax-pmin)
             MP=[]
             k=0
@@ -445,6 +451,7 @@ class App:
             ndp = len(DP)
             Sa = np.zeros((ndp, 1))
             Dk = np.zeros(n)
+            print Sa
 
             kkk = 0
             X = 0
@@ -452,7 +459,7 @@ class App:
             for i in range(ndp):
                 for j in range(n):
                     Sa[i][j] = 1 / math.sqrt(2) * math.sqrt(
-                        ((TF1(j) - TF2(j)) ** 2) + ((TF2(j) - TF3(j)) ** 2) + ((TF3(j) - TF1(j)) ** 2)) * DP(i)
+                        ((TF1[j] - TF2[j]) ** 2) + ((TF2[j] - TF3[j]) ** 2) + ((TF3[j] - TF1[j]) ** 2)) * DP[i]
                     Sa[i][j] = (Kff * Kee * Sa[i][j]) / 2
                     Sa[i][j] = Sa[i][j] / 1e3  # convierte a kpsi
 
@@ -460,16 +467,16 @@ class App:
 
                     sc = Sa[i][j] / Cus
                     if Sa[i][j] <= 31 and Sa[i][j] >= 7:
-                        X = (C1a + C3a * sc + C5a * sc ^ 2 + C7a * sc ^ 3 + C9a * sc ^ 4 + C11a * sc ^ 5) / (
-                            1 + C2a * sc + C4a * sc ^ 2 + C6a * sc ^ 3 + C8a * sc ^ 4 + C10a * sc ^ 5)
+                        X = (C1a + C3a * sc + C5a * sc ** 2 + C7a * sc ** 3 + C9a * sc ** 4 + C11a * sc ** 5) / (
+                            1 + C2a * sc + C4a * sc ** 2 + C6a * sc ** 3 + C8a * sc ** 4 + C10a * sc ** 5)
                     else:
 
-                        X = (C1b + C3b * sc + C5b * sc ^ 2 + C7b * sc ^ 3 + C9b * sc ^ 4 + C11b * sc ^ 5) / (
-                            1 + C2b * sc + C4b * sc ^ 2 + C6b * sc ^ 3 + C8b * sc ^ 4 + C10b * sc ^ 5)
+                        X = (C1b + C3b * sc + C5b * sc ** 2 + C7b * sc ** 3 + C9b * sc ** 4 + C11b * sc ** 5) / (
+                            1 + C2b * sc + C4b * sc ** 2 + C6b * sc ** 3 + C8b * sc ** 4 + C10b * sc ** 5)
 
                     # calcula el daño acumulado y vida para cada nodo para cada grupo de carga
 
-                    Nkji = 10 ^ X * (Et / Efc)  # vida acumulada en el cicli Dpi en el nodo "j"
+                    Nkji = 10 ** X * (Et / Efc)  # vida acumulada en el cicli Dpi en el nodo "j"
                     dkji = ni[i] / Nkji  # daño generado en el ciclo Dpi en el nodo "j"
                     Dk[j] += dkji  # daño acumulado en el nodo "j"
             # determina el nodo con major daño acumulado (vida minima)
@@ -487,11 +494,11 @@ class App:
                 for i in range(ndp):
                     sc = Sa[i][nd] * fac / Cus
                     if 7 <= Sa[i][j] <= 31:
-                        X = (C1a + C3a * sc + C5a * sc ^ 2 + C7a * sc ^ 3 + C9a * sc ^ 4 + C11a * sc ^ 5) / (
-                            1 + C2a * sc + C4a * sc ^ 2 + C6a * sc ^ 3 + C8a * sc ^ 4 + C10a * sc ^ 5)
+                        X = (C1a + C3a * sc + C5a * sc ** 2 + C7a * sc ** 3 + C9a * sc ** 4 + C11a * sc ** 5) / (
+                            1 + C2a * sc + C4a * sc ** 2 + C6a * sc ** 3 + C8a * sc ** 4 + C10a * sc ** 5)
                     else:
-                        X = (C1b + C3b * sc + C5b * sc ^ 2 + C7b * sc ^ 3 + C9b * sc ^ 4 + C11b * sc ^ 5) / (
-                            1 + C2b * sc + C4b * sc ^ 2 + C6b * sc ^ 3 + C8b * sc ^ 4 + C10b * sc ^ 5)
+                        X = (C1b + C3b * sc + C5b * sc ** 2 + C7b * sc ** 3 + C9b * sc ** 4 + C11b * sc ** 5) / (
+                            1 + C2b * sc + C4b * sc ** 2 + C6b * sc ** 3 + C8b * sc ** 4 + C10b * sc ** 5)
 
                     # calcula el daño acumuluado para un factor de presion
                     # dado para el nodo mas critico
