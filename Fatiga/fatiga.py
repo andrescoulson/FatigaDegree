@@ -333,8 +333,8 @@ class App:
         # calcula funcion de transferencia para cada nodo en el modelo
         pload = self.filebase
         if ~(self.filebase is None) :
-            meses = 5
-            time = meses / 12
+            meses = 5.0
+            time = meses / 12.0
             s1min = self.getFileMin_Max(self.file_min)
             s2min = self.getFileMin_Max(self.file_min)
             s3min = self.getFileMin_Max(self.file_min)
@@ -356,7 +356,7 @@ class App:
             # calculando la matriz de transferencia
             n = int(len(smin[1]) / 3)
 
-            print n
+            #print n
             s1min = smin[2][0:n]
             s2min = smin[2][n + 1:2 * n]
             s3min = smin[2][2 * n + 1:3 * n]
@@ -378,7 +378,7 @@ class App:
 
             tp = self.findext()
             rf, col = self.rainflow(tp)  # rainflow
-            print len (rf)
+            #print col
             ni = []
             k=0
             for i in range(int(col / 3)):
@@ -449,15 +449,15 @@ class App:
             # Sf = Ka*Kb*Kc*Kd*Ke*Kf*Sf;
 
             ndp = len(DP)
-            Sa = np.zeros((ndp, 1))
+            Sa = np.zeros((ndp, n))
             Dk = np.zeros(n)
-            print Sa
+            #print Sa
 
             kkk = 0
             X = 0
-
+            i=0
             for i in range(ndp):
-                for j in range(n):
+                for j in range(n-1):
                     Sa[i][j] = 1 / math.sqrt(2) * math.sqrt(
                         ((TF1[j] - TF2[j]) ** 2) + ((TF2[j] - TF3[j]) ** 2) + ((TF3[j] - TF1[j]) ** 2)) * DP[i]
                     Sa[i][j] = (Kff * Kee * Sa[i][j]) / 2
@@ -476,7 +476,7 @@ class App:
 
                     # calcula el daño acumulado y vida para cada nodo para cada grupo de carga
 
-                    Nkji = 10 ** X * (Et / Efc)  # vida acumulada en el cicli Dpi en el nodo "j"
+                    Nkji = (10 ** X) * (Et / Efc)  # vida acumulada en el cicli Dpi en el nodo "j"
                     dkji = ni[i] / Nkji  # daño generado en el ciclo Dpi en el nodo "j"
                     Dk[j] += dkji  # daño acumulado en el nodo "j"
             # determina el nodo con major daño acumulado (vida minima)
@@ -486,11 +486,13 @@ class App:
             # grafica de sensibilidad de la vida a la variacion de DP
             k = 0
             Dfac = []
-            for i in self.frange(0.5, 1.5, 0.05):
+            print "ndp", ndp," ni", len(ni)
+
+            for j in self.frange(0.5, 1.5, 0.05):
                 Dfac.append(0)
 
             for fac in self.frange(0.5, 1.5, 0.05):
-                k += 1
+
                 for i in range(ndp):
                     sc = Sa[i][nd] * fac / Cus
                     if 7 <= Sa[i][j] <= 31:
@@ -502,10 +504,10 @@ class App:
 
                     # calcula el daño acumuluado para un factor de presion
                     # dado para el nodo mas critico
-                    Dfac[k] += ni[i] / (10 ^ X * (Et / Efc))
-
+                    Dfac[k] += ni[i] / ((10 ** X) * (Et / Efc))
+                k += 1
             # grafica de sensibilidad de la vida a la variacion de DP
-            fig_slf = plt.figure(figsize=(10, 4), dpi=60)
+            fig_slf = plt.figure(figsize=(10, 5), dpi=60)
             Figure_slf = FigureCanvasTkAgg(fig_slf, master=self.master)
             Figure_slf.get_tk_widget().place(x=560, y=360)
             slf_curve = fig_slf.add_subplot(111)
@@ -515,10 +517,14 @@ class App:
             for i in self.frange(0.5, 1.5, 0.05):
                 ydata.append(i)
 
+            for i in range(len(Dfac)):
+                print float(time/Dfac[i])
+                Dfac[i] = float(time/Dfac[i])
+
             #slf_curve.set_title("Espectro de Presion")
             slf_curve.set_xlabel('P-Factor')
             slf_curve.set_ylabel('Available Life [Years]')
-            slf_curve.plot(ydata, time / Dfac)
+            slf_curve.plot(ydata, Dfac)
 
             fig_slf.canvas.draw()
 
@@ -554,9 +560,9 @@ class App:
             f.close()
         return all_data
 
-    def frange(start, stop, step):
+    def frange(self, start, stop, step):
         i = start
-        while i < stop:
+        while i <= stop:
             yield i
             i += step
 
