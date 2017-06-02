@@ -456,6 +456,7 @@ class App:
             kkk = 0
             X = 0
             i=0
+            j=0
             for i in range(ndp):
                 for j in range(n-1):
                     Sa[i][j] = 1 / math.sqrt(2) * math.sqrt(
@@ -486,21 +487,21 @@ class App:
             # grafica de sensibilidad de la vida a la variacion de DP
             k = 0
             Dfac = []
-            print "ndp", ndp," ni", len(ni)
+            #print "ndp", ndp," ni", len(ni)
 
             for j in self.frange(0.5, 1.5, 0.05):
                 Dfac.append(0)
 
             for fac in self.frange(0.5, 1.5, 0.05):
-
                 for i in range(ndp):
                     sc = Sa[i][nd] * fac / Cus
+
                     if 7 <= Sa[i][j] <= 31:
-                        X = (C1a + C3a * sc + C5a * sc ** 2 + C7a * sc ** 3 + C9a * sc ** 4 + C11a * sc ** 5) / (
-                            1 + C2a * sc + C4a * sc ** 2 + C6a * sc ** 3 + C8a * sc ** 4 + C10a * sc ** 5)
+                          X = (C1a + C3a * sc + C5a * sc ** 2 + C7a * sc ** 3 + C9a * sc ** 4 + C11a * sc ** 5) / (
+                              1 + C2a * sc + C4a * sc ** 2 + C6a * sc ** 3 + C8a * sc ** 4 + C10a * sc ** 5)
                     else:
-                        X = (C1b + C3b * sc + C5b * sc ** 2 + C7b * sc ** 3 + C9b * sc ** 4 + C11b * sc ** 5) / (
-                            1 + C2b * sc + C4b * sc ** 2 + C6b * sc ** 3 + C8b * sc ** 4 + C10b * sc ** 5)
+                          X = (C1b + C3b * sc + C5b * sc ** 2 + C7b * sc ** 3 + C9b * sc ** 4 + C11b * sc ** 5) / (
+                              1 + C2b * sc + C4b * sc ** 2 + C6b * sc ** 3 + C8b * sc ** 4 + C10b * sc ** 5)
 
                     # calcula el daño acumuluado para un factor de presion
                     # dado para el nodo mas critico
@@ -509,7 +510,7 @@ class App:
             # grafica de sensibilidad de la vida a la variacion de DP
             fig_slf = plt.figure(figsize=(10, 5), dpi=60)
             Figure_slf = FigureCanvasTkAgg(fig_slf, master=self.master)
-            Figure_slf.get_tk_widget().place(x=560, y=360)
+            Figure_slf.get_tk_widget().place(x=560, y=620)
             slf_curve = fig_slf.add_subplot(111)
             fig_slf.subplots_adjust(top=0.90)
 
@@ -518,7 +519,7 @@ class App:
                 ydata.append(i)
 
             for i in range(len(Dfac)):
-                print float(time/Dfac[i])
+                #print float(time/Dfac[i])
                 Dfac[i] = float(time/Dfac[i])
 
             #slf_curve.set_title("Espectro de Presion")
