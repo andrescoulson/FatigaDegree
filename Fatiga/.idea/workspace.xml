@@ -26,8 +26,8 @@
       <file leaf-file-name="fatiga.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/fatiga.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="392">
-              <caret line="491" column="49" lean-forward="true" selection-start-line="491" selection-start-column="49" selection-end-line="491" selection-end-column="49" />
+            <state relative-caret-position="428">
+              <caret line="510" column="47" lean-forward="false" selection-start-line="510" selection-start-column="47" selection-end-line="510" selection-end-column="47" />
               <folding>
                 <element signature="e#938#2504#0" expanded="false" />
                 <element signature="e#2540#4030#0" expanded="false" />
@@ -35,29 +35,9 @@
                 <element signature="e#5763#5885#0" expanded="false" />
                 <element signature="e#5927#8333#0" expanded="false" />
                 <element signature="e#8367#11937#0" expanded="false" />
-                <element signature="e#19331#19674#0" expanded="false" />
-                <element signature="e#19724#20108#0" expanded="false" />
+                <element signature="e#19356#19699#0" expanded="false" />
+                <element signature="e#19749#20133#0" expanded="false" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="FATIGA.m" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/FATIGA.m">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2754">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="pruebas.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/pruebas.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="126">
-              <caret line="7" column="18" lean-forward="false" selection-start-line="7" selection-start-column="18" selection-end-line="7" selection-end-column="18" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -384,7 +364,14 @@
       <option name="project" value="LOCAL" />
       <updated>1492722981110</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="ultima grafica disponible falta latoneria y pintura">
+      <created>1496430793584</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1496430793584</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -396,7 +383,7 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32893288" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.37670514" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.27911857" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -419,7 +406,8 @@
     <MESSAGE value="3d listo slf listo falta vtk" />
     <MESSAGE value="todo en una ventana falta ultima grafica" />
     <MESSAGE value="grafica funciona pero no tiene datos correctos" />
-    <option name="LAST_COMMIT_MESSAGE" value="grafica funciona pero no tiene datos correctos" />
+    <MESSAGE value="ultima grafica disponible falta latoneria y pintura" />
+    <option name="LAST_COMMIT_MESSAGE" value="ultima grafica disponible falta latoneria y pintura" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -442,8 +430,8 @@
             <element signature="e#5763#5885#0" expanded="false" />
             <element signature="e#5927#8333#0" expanded="false" />
             <element signature="e#8367#11937#0" expanded="false" />
-            <element signature="e#19331#19674#0" expanded="false" />
-            <element signature="e#19724#20108#0" expanded="false" />
+            <element signature="e#19356#19699#0" expanded="false" />
+            <element signature="e#19749#20133#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -467,8 +455,8 @@
             <element signature="e#5763#5885#0" expanded="false" />
             <element signature="e#5927#8333#0" expanded="false" />
             <element signature="e#8367#11937#0" expanded="false" />
-            <element signature="e#19331#19674#0" expanded="false" />
-            <element signature="e#19724#20108#0" expanded="false" />
+            <element signature="e#19356#19699#0" expanded="false" />
+            <element signature="e#19749#20133#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -492,8 +480,8 @@
             <element signature="e#5763#5885#0" expanded="false" />
             <element signature="e#5927#8333#0" expanded="false" />
             <element signature="e#8367#11937#0" expanded="false" />
-            <element signature="e#19331#19674#0" expanded="false" />
-            <element signature="e#19724#20108#0" expanded="false" />
+            <element signature="e#19356#19699#0" expanded="false" />
+            <element signature="e#19749#20133#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -517,8 +505,8 @@
             <element signature="e#5763#5885#0" expanded="false" />
             <element signature="e#5927#8333#0" expanded="false" />
             <element signature="e#8367#11937#0" expanded="false" />
-            <element signature="e#19331#19674#0" expanded="false" />
-            <element signature="e#19724#20108#0" expanded="false" />
+            <element signature="e#19356#19699#0" expanded="false" />
+            <element signature="e#19749#20133#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -541,16 +529,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/FATIGA.m">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2754">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        <state relative-caret-position="144">
+          <caret line="155" column="12" lean-forward="false" selection-start-line="155" selection-start-column="12" selection-end-line="155" selection-end-column="56" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/fatiga.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="392">
-          <caret line="491" column="49" lean-forward="true" selection-start-line="491" selection-start-column="49" selection-end-line="491" selection-end-column="49" />
+        <state relative-caret-position="428">
+          <caret line="510" column="47" lean-forward="false" selection-start-line="510" selection-start-column="47" selection-end-line="510" selection-end-column="47" />
           <folding>
             <element signature="e#938#2504#0" expanded="false" />
             <element signature="e#2540#4030#0" expanded="false" />
@@ -558,8 +546,8 @@
             <element signature="e#5763#5885#0" expanded="false" />
             <element signature="e#5927#8333#0" expanded="false" />
             <element signature="e#8367#11937#0" expanded="false" />
-            <element signature="e#19331#19674#0" expanded="false" />
-            <element signature="e#19724#20108#0" expanded="false" />
+            <element signature="e#19356#19699#0" expanded="false" />
+            <element signature="e#19749#20133#0" expanded="false" />
           </folding>
         </state>
       </provider>

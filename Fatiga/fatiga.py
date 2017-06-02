@@ -508,9 +508,9 @@ class App:
                     Dfac[k] += ni[i] / ((10 ** X) * (Et / Efc))
                 k += 1
             # grafica de sensibilidad de la vida a la variacion de DP
-            fig_slf = plt.figure(figsize=(10, 5), dpi=60)
+            fig_slf = plt.figure(figsize=(10, 7), dpi=60)
             Figure_slf = FigureCanvasTkAgg(fig_slf, master=self.master)
-            Figure_slf.get_tk_widget().place(x=560, y=620)
+            Figure_slf.get_tk_widget().place(x=580, y=620)
             slf_curve = fig_slf.add_subplot(111)
             fig_slf.subplots_adjust(top=0.90)
 
@@ -522,7 +522,7 @@ class App:
                 #print float(time/Dfac[i])
                 Dfac[i] = float(time/Dfac[i])
 
-            #slf_curve.set_title("Espectro de Presion")
+            #slf_curve.set_title("Sensibilidad de la vida a la variación de DP")
             slf_curve.set_xlabel('P-Factor')
             slf_curve.set_ylabel('Available Life [Years]')
             slf_curve.plot(ydata, Dfac)
@@ -571,7 +571,7 @@ class App:
 ventanaPrincipal = Tk()
 app = App(ventanaPrincipal)
 ventanaPrincipal.wm_title("Fatiga")
-ventanaPrincipal.geometry("1150x980")
+ventanaPrincipal.geometry("1170x980")
 utils.center(ventanaPrincipal)
 ventanaPrincipal.deiconify()
 ventanaPrincipal.mainloop()
